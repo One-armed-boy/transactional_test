@@ -49,7 +49,8 @@ public class UserServiceTest {
     userService.addUser(user1);
     userService.addUser(user2);
 
-    var numOfThread = 3;
+    var numOfThread = 10;
+    var moneyForTransfer = 20;
     CountDownLatch startLatch = new CountDownLatch(1);
     CountDownLatch endLatch = new CountDownLatch(numOfThread);
 
@@ -59,7 +60,7 @@ public class UserServiceTest {
         try {
           startLatch.await();
 
-          userService.transfer(user1.getUser(), user2.getUser(), 20);
+          userService.transfer(user1.getUser(), user2.getUser(), moneyForTransfer);
         } catch (Exception e) {
           System.out.println(e.getMessage());
         } finally {
@@ -73,7 +74,7 @@ public class UserServiceTest {
     // then
     User user1After = userService.getUserById(user1.getUser());
     User user2After = userService.getUserById(user2.getUser());
-    Assertions.assertThat(user1After.getBalance()).isEqualTo(0);
-    Assertions.assertThat(user2After.getBalance()).isEqualTo(user1.getBalance() + user2.getBalance());
+    Assertions.assertThat(user1After.getBalance()).isEqualTo(Math.max(0, user1.getBalance() - numOfThread * moneyForTransfer));
+    Assertions.assertThat(user2After.getBalance()).isEqualTo(Math.min(user1.getBalance() + user2.getBalance(), user2.getBalance() + numOfThread * moneyForTransfer));
   }
 }

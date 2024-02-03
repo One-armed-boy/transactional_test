@@ -18,13 +18,17 @@ public class UserServiceWithoutTx implements UserService{
   }
 
   public User getUserById(String userId) {
-    Optional<User> userOpt = userRepository.findById(userId);
-    return userOpt.orElseThrow(EntityNotFoundException::new);
+    return userRepository.findById(userId)
+            .orElseThrow(EntityNotFoundException::new);
+  }
+
+  private User getUserForUpdateById(String userId) {
+    return userRepository.findForUpdateByUser(userId).orElseThrow(EntityNotFoundException::new);
   }
 
   public void transfer(String fromUserId, String toUserId, long money) {
-    User fromUser = getUserById(fromUserId);
-    User toUser = getUserById(toUserId);
+    User fromUser = getUserForUpdateById(fromUserId);
+    User toUser = getUserForUpdateById(toUserId);
     long fromBalance = fromUser.getBalance();
 
     if (fromBalance < money) {

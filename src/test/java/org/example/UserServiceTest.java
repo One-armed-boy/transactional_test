@@ -20,7 +20,7 @@ public class UserServiceTest {
     userRepository.deleteAll();
   }
 
-//  @Test
+  @Test
   @DisplayName(
           """
           멀티 스레드 환경에서 UserServiceWithoutTx를 통해 송금 작업이 DB의 일관성을 지키며 제대로 이루어지는지 테스트
